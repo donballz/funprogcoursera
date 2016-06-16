@@ -1,16 +1,19 @@
-def abs(n: Double) = if (n > 0) n else -n
+def sqrt(x: Double) = {
 
-def improve(guess: Double, x: Double) =
-  (x / guess + guess) / 2
+  def abs(n: Double) = if (n > 0) n else -n
 
-def isGoodEnough(guess: Double, x: Double) =
-  abs(guess * guess - x) / x < 0.00001
+  def improve(guess: Double) =
+    (x / guess + guess) / 2
 
-def sqrtIter(guess: Double, x: Double): Double =
-  if (isGoodEnough(guess, x)) guess
-  else sqrtIter(improve(guess, x), x)
+  def isGoodEnough(guess: Double) =
+    abs(guess * guess - x) / x < 0.00001
 
-def sqrt(x: Double) = sqrtIter(1, x)
+  def sqrtIter(guess: Double): Double =
+    if (isGoodEnough(guess)) guess
+    else sqrtIter(improve(guess))
+
+  sqrtIter(1)
+}
 
 sqrt(2)
 sqrt(4)
