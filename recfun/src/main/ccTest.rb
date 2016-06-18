@@ -3,18 +3,20 @@
 # coins.tail = coins[1..-1]
 
 def checkOnePath(money, coins, track)
-    if not coins.any? or money < 0
+    if (not coins.any?) or money < 0
     	puts "path: #{track}; term at 0 for lack of coins" unless coins.any?
     	puts "path: #{track}; term at 0 for lack of money" if money < 0
     	0
     elsif (money == 0) 
-    	puts "path: #{track}; term at 1"
+    	puts "path: #{track}; term at 1 with coins #{coins}"
     	1
     elsif (money >= coins[0])
     	track.push(coins[0])
+    	puts "track add #{coins[0]} with money #{money} for result #{track}"
       	checkOnePath(money - coins[0], coins, track) +
       	checkOnePath(money - coins[0], coins[1..-1], track)
     else 
+    	puts "coin #{coins[0]} too large for money #{money}"
     	checkOnePath(money, coins[1..-1], track)
     end
 end
