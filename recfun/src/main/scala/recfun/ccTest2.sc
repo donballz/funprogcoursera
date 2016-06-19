@@ -1,16 +1,16 @@
 def countChange(money: Int, coins: List[Int]): Int = {
-  def checkOnePath(money: Int, coins: List[Int]): Int =
-    if (coins.isEmpty || money < 0) 0
-    else if (money == coins.head)
+  def checkOnePath(money: Int, start: Int, incoins: List[Int]): Int =
+    if (cinoins.isEmpty || money < 0) 0
+    else if (money == start)
       1
-    else if (money > coins.head)
-      checkOnePath(money - coins.head, coins) +
-        checkOnePath(money - coins.head, coins.tail)
-    else checkOnePath(money, coins.tail)
+    else if (money > start)
+      checkOnePath(money - start, incoins) +
+        checkOnePath(money - start, incoins.tail)
+    else checkOnePath(money, incoins.head, incoins.tail)
 
-  def checkAll(count: Int, money: Int, coins: List[Int]): Int =
-    if (coins.isEmpty) count
-    else checkAll(count + checkOnePath(money, coins), money, coins.tail)
+  def checkAll(count: Int, money: Int, incoins: List[Int]): Int =
+    if (incoins.isEmpty) count
+    else checkAll(count + checkOnePath(money, incoins.head, coins), money, incoins.tail)
 
   checkAll(0, money, coins)
 }
