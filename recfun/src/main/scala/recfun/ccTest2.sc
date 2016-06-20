@@ -1,9 +1,15 @@
 def countChange(money: Int, coins: List[Int]): Int = {
-  def iter(coins: List[Int]): List[Int] =
-    if (coins.isEmpty)
+  def innerLoop(money: Int, innerCoins: List[Int]): Int =
+    if (innerCoins.isEmpty || money < 0) 0
+    else if (money == 0) 1
+    else innerLoop(money - innerCoins.head, innerCoins.tail)
 
+  def outerLoop(money: Int, innerCoins: List[Int], acc: Int): Int =
+    if (innerCoins.isEmpty) acc
+    else outerLoop(money, innerCoins.tail, acc + innerLoop(money, coins))
 
-  checkAll(0, money, coins)
+  outerLoop(money, coins, 0)
+
 }
 
 countChange(4,List(1,2))
