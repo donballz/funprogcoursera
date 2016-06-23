@@ -1,18 +1,13 @@
 def countChange(money: Int, coins: List[Int]): Int = {
-  def checkOnePath(money: Int, coins: List[Int]): Int =
+  def myLoop(money: Int, coins: List[Int], acc: Int): Int =
     if (coins.isEmpty || money < 0) 0
-    else if (money == coins.head)
-      1 
-    else if (money > coins.head)
-      checkOnePath(money - coins.head, coins) +
-      checkOnePath(money - coins.head, coins.tail)
-    else checkOnePath(money, coins.tail)
+    else if (money == 0)
+      acc + 1
+    else
+      myLoop(money - coins.head, coins, acc) +
+        myLoop(money - coins.head, coins.tail, acc)
 
-  def checkAll(count: Int, money: Int, coins: List[Int]): Int =
-    if (coins.isEmpty) count
-    else checkAll(count + checkOnePath(money, coins), money, coins.tail)
-
-  checkAll(0, money, coins)
+  myLoop(money, coins, 0)
 }
 
 countChange(4,List(1,2))

@@ -3,10 +3,8 @@ class Rational(x: Int, y: Int) {
 
   def this(x: Int) = this(x, 1)
 
-  private def gcd(a: Int, b:Int): Int = if (b == 0) a else gcd(b, a % b)
-  private val g = gcd(x, y)
-  def numer = x / g
-  def denom = y / g
+  def numer = x
+  def denom = y
 
   def less(that: Rational) =
     numer * that.denom < that.numer * denom /* implied this */
@@ -25,7 +23,12 @@ class Rational(x: Int, y: Int) {
   def sub(that: Rational) =
     add(that.neg)
 
-  override def toString() = numer + "/" + denom
+  private def gcd(a: Int, b:Int): Int = if (b == 0) a else gcd(b, a % b)
+
+  override def toString() = {
+    val g = gcd(numer, denom)
+    numer/g + "/" + denom/g
+  }
 }
 
 val x = new Rational(1, 2)
@@ -34,7 +37,7 @@ x.denom
 val y = new Rational(2, 3)
 x.add(y)
 y.add(x)
-x.neg()
+x.neg
 
 y.sub(x)
 
