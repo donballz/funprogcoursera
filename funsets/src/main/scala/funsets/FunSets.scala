@@ -66,8 +66,6 @@ object FunSets {
   /**
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
-    * modified:   funsets/src/main/scala/funsets/FunSets.scala
-    * modified:   funsets/src/test/scala/funsets/FunSetSuite.scala
    */
     def exists(s: Set, p: Int => Boolean): Boolean = {
     def iter(a: Int): Boolean = {
@@ -81,7 +79,14 @@ object FunSets {
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-    def map(s: Set, f: Int => Int): Set = ???
+    def map(s: Set, f: Int => Int): Set = {
+    def iter(a: Int): Set = {
+      if (a > bound) (x: Int) => false
+      else if (s(a)) union(singletonSet(f(a)),  iter(a + 1))
+      else iter(a + 1)
+    }
+    iter(-bound)
+  }
   
   /**
    * Displays the contents of a set

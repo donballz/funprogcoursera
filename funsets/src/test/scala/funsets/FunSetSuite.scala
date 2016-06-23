@@ -148,4 +148,12 @@ class FunSetSuite extends FunSuite {
       assert(!exists(big, (x: Int) => x < 0))
     }
   }
+
+  test("working map function") {
+    new TestSets {
+      val bigSquared = map(big, (x: Int) => x * x)
+      assert(contains(bigSquared, 36))
+      assert(!contains(bigSquared, 8))
+    }
+  }
 }
