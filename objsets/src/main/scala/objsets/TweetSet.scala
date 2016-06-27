@@ -38,10 +38,10 @@ abstract class TweetSet {
    * This method takes a predicate and returns a subset of all the elements
    * in the original set for which the predicate is true.
    *
-   * Question: Can we implment this method here, or should it remain abstract
+   * Question: Can we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def filter(p: Tweet => Boolean): TweetSet = ???
+    def filter(p: Tweet => Boolean): TweetSet = filterAcc(p, new Empty)
   
   /**
    * This is a helper method for `filter` that propagetes the accumulated tweets.
@@ -51,10 +51,10 @@ abstract class TweetSet {
   /**
    * Returns a new `TweetSet` that is the union of `TweetSet`s `this` and `that`.
    *
-   * Question: Should we implment this method here, or should it remain abstract
+   * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def union(that: TweetSet): TweetSet = ???
+    def union(that: TweetSet): TweetSet
   
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -62,10 +62,10 @@ abstract class TweetSet {
    * Calling `mostRetweeted` on an empty set should throw an exception of
    * type `java.util.NoSuchElementException`.
    *
-   * Question: Should we implment this method here, or should it remain abstract
+   * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def mostRetweeted: Tweet = ???
+    def mostRetweeted: Tweet 
   
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -73,7 +73,7 @@ abstract class TweetSet {
    * have the highest retweet count.
    *
    * Hint: the method `remove` on TweetSet will be very useful.
-   * Question: Should we implment this method here, or should it remain abstract
+   * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
     def descendingByRetweet: TweetList = ???
@@ -107,8 +107,9 @@ abstract class TweetSet {
 }
 
 class Empty extends TweetSet {
-    def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
-  
+  def union(that: TweetSet): TweetSet = that
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
+  def mostRetweeted: Tweet = throw new NoSuchElementException("Empty tweetset")
   /**
    * The following methods are already implemented
    */
@@ -123,10 +124,25 @@ class Empty extends TweetSet {
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
+  def union(that: TweetSet): TweetSet =
+    ((left union right) union that) incl elem
 
-    def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
-  
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
+    val next = left.filterAcc(p, acc) union right.filterAcc(p, acc)
+    if (p(elem)) acc union next union new NonEmpty(elem, new Empty, new Empty)
+    else next
+}
+
+  def mostRetweeted: Tweet = {
+    def max(x: Tweet, y: Tweet) = if (x.retweets > y.retweets) x else y
     
+    def helper(branch: TweetSet, winner: Tweet): Tweet =
+      if (elem.retweets > winner.retweets) max(helper(left, elem), helper(right, elem))
+      else max(helper(left, winner), helper(right, winner))
+
+    helper(this, elem)
+  }
+  
   /**
    * The following methods are already implemented
    */
