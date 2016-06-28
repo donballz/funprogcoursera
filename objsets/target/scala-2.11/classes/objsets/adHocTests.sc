@@ -18,7 +18,7 @@ set4a.mostRetweeted
 
 set5.mostRetweeted
 
-set5.remove(d)
+set5.descendingByRetweet
 
 def range(x: Int): TweetList =
   if (x < 0) Nil
