@@ -64,7 +64,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   override def toString = "{" + left + elem + right + "}"
 
   def union(that: TweetSet): TweetSet =
-    ((left union right) union that) incl elem
+    (left union (right union that)) incl elem
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
     val next = left.filterAcc(p, acc) union right.filterAcc(p, acc)
