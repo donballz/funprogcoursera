@@ -65,7 +65,7 @@ abstract class TweetSet {
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def mostRetweeted: Tweet 
+    def mostRetweeted: Tweet
   
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -77,6 +77,10 @@ abstract class TweetSet {
    * and be implemented in the subclasses?
    */
     def descendingByRetweet: TweetList = ???
+
+    def isEmpty: Boolean
+
+    def helper(winner: Tweet): Tweet
   
   /**
    * The following methods are already implemented
@@ -107,9 +111,12 @@ abstract class TweetSet {
 }
 
 class Empty extends TweetSet {
+  def isEmpty = true
+  override def toString = "."
   def union(that: TweetSet): TweetSet = that
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
   def mostRetweeted: Tweet = throw new NoSuchElementException("Empty tweetset")
+  def helper(winner: Tweet) = winner
   /**
    * The following methods are already implemented
    */
@@ -124,6 +131,10 @@ class Empty extends TweetSet {
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
+  def isEmpty = false
+
+  override def toString = "{" + left + elem + right + "}"
+
   def union(that: TweetSet): TweetSet =
     ((left union right) union that) incl elem
 
@@ -131,17 +142,19 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     val next = left.filterAcc(p, acc) union right.filterAcc(p, acc)
     if (p(elem)) acc union next union new NonEmpty(elem, new Empty, new Empty)
     else next
-}
-
-  def mostRetweeted: Tweet = {
-    def max(x: Tweet, y: Tweet) = if (x.retweets > y.retweets) x else y
-    
-    def helper(branch: TweetSet, winner: Tweet): Tweet =
-      if (elem.retweets > winner.retweets) max(helper(left, elem), helper(right, elem))
-      else max(helper(left, winner), helper(right, winner))
-
-    helper(this, elem)
   }
+
+  def helper(winner: Tweet): Tweet = {
+    def max(x: Tweet, y: Tweet) = if (x.retweets > y.retweets) x else y
+
+    if (isEmpty) winner
+    else if (elem.retweets > winner.retweets) max(left.helper(elem), right.helper(elem))
+    else max(left.helper(winner), right.helper(winner))
+  }
+
+  def mostRetweeted: Tweet =
+    this.helper(elem)
+
   
   /**
    * The following methods are already implemented
