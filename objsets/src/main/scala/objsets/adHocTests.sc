@@ -16,4 +16,12 @@ set5.isEmpty
 
 set4a.mostRetweeted
 
+set5.mostRetweeted
 
+set5.descendingByRetweet
+
+def range(x: Int): TweetList =
+  if (x < 0) Nil
+  else new Cons(new Tweet("a", "#watwat", x), range(x - 1))
+
+range(10)
